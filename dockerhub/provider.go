@@ -25,12 +25,14 @@ func Provider() *schema.Provider {
 		DataSourcesMap: map[string]*schema.Resource{
 			"dockerhub_image_tag": dataSourceImageTags(),
 		},
+    ConfigureContextFunc: providerConfigure,
 	}
 }
 
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	var diags diag.Diagnostics
-  var client Client
+  
+  client := NewClient()
 	
   username, usernameSet := d.GetOk("username")
 	password, passwordSet := d.GetOk("password")

@@ -81,7 +81,7 @@ func dataSourceImageTags() *schema.Resource {
 func dataSourceImageTagRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-  var client Client 
+  client := m.(*Client)
 
   j, err := client.GetImageTags(d.Get("namespace").(string), d.Get("repository_name").(string), d.Get("tag_name").(string))
 

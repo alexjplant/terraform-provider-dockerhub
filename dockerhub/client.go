@@ -25,8 +25,14 @@ type imageTag struct {
 }
 
 type Client struct {
-  http http.Client
+  http *http.Client
   token string
+}
+
+func NewClient() *Client {
+  c := new (Client)
+  c.http = &http.Client{}
+  return c
 }
 
 func (c Client) Auth(username string, password string) {
