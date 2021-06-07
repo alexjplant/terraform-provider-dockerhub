@@ -4,7 +4,7 @@ NAMESPACE=alexjplant
 NAME=dockerhub
 BINARY=terraform-provider-${NAME}
 VERSION=0.1
-OS_ARCH=darwin_arm64
+OS_ARCH=$(shell go version | cut -d " " -f4 | tr "/" "_")
 
 default: install
 

@@ -2,11 +2,6 @@ package dockerhub
 
 import (
 	"context"
-	"net/http"
-	"time"
-	//  "log"
-	"encoding/json"
-	"fmt"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -82,51 +77,19 @@ func dataSourceImageTags() *schema.Resource {
 	}
 }
 
-type ApiImageTag struct {
-	Creator             int    `json:"creator"`
-	ID                  int    `json:"id"`
-	ImageID             string `json:"image_id"`
-	LastUpdated         string `json:"last_updated"`
-	LastUpdater         string `json:"last_updater"`
-	LastUpdaterUsername string `json:"last_updater_username"`
-	Name                string `json:"name"`
-	Repository          int    `json:"repository"`
-	FullSize            int    `json:"full_size"`
-	V2                  bool   `json:"v2"`
-	TagStatus           string `json:"tag_status"`
-	TagLastPulled       string `json:"tag_last_pulled"`
-	TagLastPushed       string `json:"tag_last_pushed"`
-}
 
 func dataSourceImageTagRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-
-	client := &http.Client{Timeout: 10 * time.Second}
-
 	var diags diag.Diagnostics
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://hub.docker.com/v2/repositories/%s/%s/tags/%s", d.Get("namespace"), d.Get("repository_name"), d.Get("tag_name")), nil)
-	if err != nil {
-		return diag.FromErr(err)
-	}
+  client := m.(*Client)
 
-	r, err := client.Do(req)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	if r.StatusCode != 200 {
-		var d diag.Diagnostic
-		d.Severity = diag.Error
-		d.Summary = "Image tag not found"
-		d.Detail = fmt.Sprintf("Received HTTP %v when invoking HTTP API", r.StatusCode)
-		diags = append(diags, d)
-	}
+  j, err := client.GetImageTags(d.Get("namespace").(string), d.Get("repository_name").(string), d.Get("tag_name").(string))
 
-	defer r.Body.Close()
+  if err != nil {
+   return diag.FromErr(err) 
+  }
 
-	var j ApiImageTag
-	err = json.NewDecoder(r.Body).Decode(&j)
-
-	d.SetId(strconv.Itoa(j.ID))
+  d.SetId(strconv.Itoa(j.ID))
 	d.Set("creator", j.Creator)
 	d.Set("image_id", j.ImageID)
 	d.Set("last_updated", j.LastUpdated)
