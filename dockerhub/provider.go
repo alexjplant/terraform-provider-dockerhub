@@ -38,7 +38,10 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	password, passwordSet := d.GetOk("password")
 
   if usernameSet && passwordSet {
-    client.Auth(username.(string), password.(string))
+    err := client.Auth(username.(string), password.(string))
+    if err != nil {
+      return nil, diag.FromErr(err)
+    }
   }
 
   return client, diags

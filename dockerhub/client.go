@@ -35,15 +35,25 @@ func NewClient() *Client {
   return c
 }
 
-func (c Client) Auth(username string, password string) {
+func (c Client) Auth(username string, password string) error {
 		login, _ := json.Marshal(map[string]string{"username": username, "password": password})
 
-		res, _ := c.http.Post("https://hub.docker.com/v2/users/login/", "application/json", bytes.NewBuffer(login))
-		defer res.Body.Close()
+		res, err := c.http.Post("https://hub.docker.com/v2/users/login/", "application/json", bytes.NewBuffer(login))
+		if err != nil {
+      return fmt.Errorf("error invoking login API: %w", err)
+    }
+
+    defer res.Body.Close()
 		var resJSON map[string]string
 
 		json.NewDecoder(res.Body).Decode(&resJSON)
     c.token = resJSON["token"]
+
+    if c.token == "" {
+      return errors.New("unable to parse token from login")
+    }
+
+    return nil
 }
 
 func (c Client) GetImageTags(namespace string, repositoryName string, tagName string) (*imageTag, error) {
