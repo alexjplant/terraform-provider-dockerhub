@@ -22,6 +22,21 @@ type imageTag struct {
 	TagStatus           string `json:"tag_status"`
 	TagLastPulled       string `json:"tag_last_pulled"`
 	TagLastPushed       string `json:"tag_last_pushed"`
+  Images              []image `json:"images"`
+}
+
+type image struct {
+  Architecture  string  `json:"architecture"`
+  Features  string `json:"features"`
+  Variant string `json:"variant"`
+  Digest string `json:"string"`
+  OS string `json:"os"`
+  OSFeatures string `json:"os_features"`
+  OSVersion string `json:"os_version"`
+  Size  int `json:"size"`
+  Status  string   `json:"status"`
+  LastPulled string `json:"last_pulled"`
+  LastPushed  string  `json:"last_pushed"`
 }
 
 type Client struct {

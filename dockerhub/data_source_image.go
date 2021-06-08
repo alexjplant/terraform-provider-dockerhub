@@ -73,6 +73,56 @@ func dataSourceImageTags() *schema.Resource {
 				Computed: true,
 				Optional: true,
 			},
+      "images": &schema.Schema{
+        Type:     schema.TypeSet,
+        Computed: true,
+        Elem: map[string]*schema.Schema{
+          "architecture": {
+            Type: schema.TypeString,
+            Computed: true,
+          },
+          "features": {
+            Type: schema.TypeString,
+            Computed: true,
+          },
+          "variant": {
+            Type: schema.TypeString,
+            Computed: true,
+          },
+          "digest": {
+            Type: schema.TypeString,
+            Computed: true,
+          },
+          "os": {
+            Type: schema.TypeString,
+            Computed: true,
+          },
+          "os_features": {
+            Type: schema.TypeString,
+            Computed: true,
+          },
+          "os_version": {
+            Type: schema.TypeString,
+            Computed: true,
+          },
+          "size": {
+            Type: schema.TypeInt,
+            Computed: true,
+          },
+          "status": {
+            Type: schema.TypeString,
+            Computed: true,
+          },
+          "last_pulled": {
+            Type: schema.TypeString,
+            Computed: true,
+          },
+          "last_pushed": {
+            Type: schema.TypeString,
+            Computed: true,
+          },
+        },
+      },
 		},
 	}
 }
